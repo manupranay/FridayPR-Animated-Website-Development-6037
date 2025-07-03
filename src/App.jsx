@@ -11,7 +11,9 @@ import PRDistributionPage from './pages/services/PRDistributionPage';
 import BrandingPage from './pages/services/BrandingPage';
 import PortfolioPage from './pages/PortfolioPage';
 import ProjectsPage from './pages/ProjectsPage';
+import ProjectDetailPage from './pages/ProjectDetailPage';
 import BlogPage from './pages/BlogPage';
+import BlogPostPage from './pages/BlogPostPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ScrollToTop from './components/ScrollToTop';
@@ -23,6 +25,7 @@ function App() {
       <div className="app-container bg-light-gray min-h-screen">
         <ScrollToTop />
         <Header />
+        
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -32,12 +35,16 @@ function App() {
             <Route path="/services/pr-distribution" element={<PRDistributionPage />} />
             <Route path="/services/branding" element={<BrandingPage />} />
             <Route path="/portfolio" element={<PortfolioPage />} />
+            <Route path="/portfolio/:slug" element={<ProjectDetailPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
+            <Route path="/projects/:slug" element={<ProjectDetailPage />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </AnimatePresence>
+        
         <Footer />
       </div>
     </Router>

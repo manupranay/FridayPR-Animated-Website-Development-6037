@@ -1,65 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
-import useApi from '../hooks/useApi';
+import FeaturedImage from '../components/FeaturedImage';
+import useApiWithImages from '../hooks/useApiWithImages';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const { FiExternalLink, FiUser, FiTool, FiCalendar, FiTag } = FiIcons;
+const { FiExternalLink, FiUser, FiTool, FiCalendar, FiArrowRight } = FiIcons;
 
 const ProjectsPage = () => {
-  const { data: projects, loading, error } = useApi('https://api.fridaypr.com/wp-json/wp/v2/portfolio');
-  const [projectsWithImages, setProjectsWithImages] = useState([]);
-  const [imagesLoading, setImagesLoading] = useState(true);
+  const { data: projects, loading, error } = useApiWithImages('https://api.fridaypr.com/wp-json/wp/v2/portfolio');
   const [filter, setFilter] = useState('all');
   const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
 
   const categories = ['all', 'web-design', 'seo', 'branding', 'e-commerce'];
 
-  useEffect(() => {
-    const fetchImages = async () => {
-      if (!projects) return;
-
-      const projectData = await Promise.all(
-        projects.map(async (item) => {
-          let imageUrl = null;
-          if (item.acf?.project_images && item.acf.project_images.length > 0) {
-            try {
-              const imageId = item.acf.project_images[0];
-              const imageResponse = await fetch(`https://api.fridaypr.com/wp-json/wp/v2/media/${imageId}`);
-              if (imageResponse.ok) {
-                const imageData = await imageResponse.json();
-                imageUrl = imageData.source_url;
-              }
-            } catch (err) {
-              console.error('Error fetching image:', err);
-            }
-          }
-          return {
-            ...item,
-            imageUrl: imageUrl || `https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop`,
-            category: item.acf?.project_category || 'web-design'
-          };
-        })
-      );
-
-      setProjectsWithImages(projectData);
-      setImagesLoading(false);
-    };
-
-    if (projects && !loading) {
-      fetchImages();
-    }
-  }, [projects, loading]);
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
+      transition: { staggerChildren: 0.2 }
     }
   };
 
@@ -72,7 +34,13 @@ const ProjectsPage = () => {
     }
   };
 
-  const filteredProjects = projectsWithImages.filter(project => 
+  // Add category to projects (for filtering)
+  const projectsWithCategories = projects?.map(project => ({
+    ...project,
+    category: project.acf?.project_category || 'web-design'
+  }));
+
+  const filteredProjects = projectsWithCategories?.filter(project =>
     filter === 'all' || project.category === filter
   );
 
@@ -136,16 +104,16 @@ const ProjectsPage = () => {
       {/* Projects Grid */}
       <section ref={ref} className="py-20 bg-light-gray">
         <div className="max-w-7xl mx-auto px-6">
-          {loading || imagesLoading ? (
+          {loading ? (
             <LoadingSpinner className="py-20" />
           ) : error ? (
             <div className="text-center py-20">
               <p className="text-red-500 mb-4">Failed to load projects</p>
               <p className="text-charcoal/70">Please try again later</p>
             </div>
-          ) : filteredProjects.length === 0 ? (
+          ) : filteredProjects && filteredProjects.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-charcoal/70 text-xl">No projects available at the moment</p>
+              <p className="text-charcoal/70 text-xl">No projects available for this category</p>
             </div>
           ) : (
             <motion.div
@@ -154,29 +122,26 @@ const ProjectsPage = () => {
               animate={inView ? "visible" : "hidden"}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {filteredProjects.map((project, index) => (
+              {filteredProjects?.map((project, index) => (
                 <motion.div
                   key={project.id}
                   variants={itemVariants}
-                  whileHover={{ 
-                    y: -15, 
+                  whileHover={{
+                    y: -15,
                     boxShadow: "0 30px 60px rgba(0, 212, 204, 0.15)",
                     rotateY: 5
                   }}
                   className="bg-pure-white rounded-3xl overflow-hidden shadow-lg card-hover group"
                 >
-                  {/* Project Image */}
-                  <div className="relative h-64 overflow-hidden">
-                    <motion.img
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.4 }}
-                      src={project.imageUrl}
+                  <div className="relative">
+                    <FeaturedImage
+                      imageUrl={project.featuredImageUrl}
                       alt={project.title?.rendered}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
+                      className="h-64"
+                      showOverlay={false}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent opacity-0 
-                                    group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    
+                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                       {project.acf?.project_url && (
                         <motion.a
                           href={project.acf.project_url}
@@ -184,18 +149,24 @@ const ProjectsPage = () => {
                           rel="noopener noreferrer"
                           whileHover={{ scale: 1.2, rotate: 360 }}
                           whileTap={{ scale: 0.9 }}
-                          className="bg-electric-teal text-pure-white p-4 rounded-full hover:bg-bright-orange 
-                                     transition-all duration-300 shadow-xl"
+                          className="bg-electric-teal text-pure-white p-4 rounded-full hover:bg-bright-orange transition-all duration-300 shadow-xl mr-4"
                         >
                           <SafeIcon icon={FiExternalLink} className="w-6 h-6" />
                         </motion.a>
                       )}
+                      <Link to={`/projects/${project.slug || project.id}`}>
+                        <motion.button
+                          whileHover={{ scale: 1.2 }}
+                          whileTap={{ scale: 0.9 }}
+                          className="bg-deep-purple text-pure-white p-4 rounded-full hover:bg-bright-orange transition-all duration-300 shadow-xl"
+                        >
+                          <SafeIcon icon={FiArrowRight} className="w-6 h-6" />
+                        </motion.button>
+                      </Link>
                     </div>
                   </div>
 
-                  {/* Project Info */}
                   <div className="p-6">
-                    {/* Category Badge */}
                     <div className="flex items-center justify-between mb-3">
                       <span className="bg-electric-teal/10 text-electric-teal px-3 py-1 rounded-full text-xs font-semibold">
                         {project.category.replace('-', ' ').toUpperCase()}
@@ -206,19 +177,19 @@ const ProjectsPage = () => {
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-charcoal mb-3 group-hover:text-electric-teal 
-                                   transition-colors duration-300 line-clamp-2">
-                      {project.title?.rendered}
-                    </h3>
-                    
-                    <div 
+                    <Link to={`/projects/${project.slug || project.id}`}>
+                      <h3 className="text-xl font-bold text-charcoal mb-3 group-hover:text-electric-teal transition-colors duration-300 line-clamp-2">
+                        {project.title?.rendered}
+                      </h3>
+                    </Link>
+
+                    <div
                       className="text-charcoal/70 text-sm leading-relaxed mb-4 line-clamp-3"
-                      dangerouslySetInnerHTML={{ 
-                        __html: project.content?.rendered?.replace(/<[^>]*>/g, '')?.substring(0, 120) + '...' 
+                      dangerouslySetInnerHTML={{
+                        __html: project.content?.rendered?.replace(/<[^>]*>/g, '')?.substring(0, 120) + '...'
                       }}
                     />
 
-                    {/* Project Details */}
                     <div className="space-y-2 mb-4">
                       {project.acf?.client_name && (
                         <div className="flex items-center text-sm text-charcoal/70">
@@ -234,20 +205,15 @@ const ProjectsPage = () => {
                       )}
                     </div>
 
-                    {/* Action Button */}
-                    {project.acf?.project_url && (
-                      <motion.a
-                        href={project.acf.project_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <Link to={`/projects/${project.slug || project.id}`}>
+                      <motion.div
                         whileHover={{ x: 5 }}
-                        className="inline-flex items-center text-electric-teal font-semibold 
-                                   hover:text-bright-orange transition-colors duration-300"
+                        className="inline-flex items-center text-electric-teal font-semibold hover:text-bright-orange transition-colors duration-300"
                       >
-                        <span>View Project</span>
-                        <SafeIcon icon={FiExternalLink} className="w-4 h-4 ml-2" />
-                      </motion.a>
-                    )}
+                        <span>View Case Study</span>
+                        <SafeIcon icon={FiArrowRight} className="w-4 h-4 ml-2" />
+                      </motion.div>
+                    </Link>
                   </div>
                 </motion.div>
               ))}
@@ -287,15 +253,14 @@ const ProjectsPage = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.1,
                   rotateY: 10,
                   boxShadow: "0 20px 40px rgba(0, 212, 204, 0.15)"
                 }}
-                className="text-center bg-gradient-to-br from-electric-teal/5 to-deep-purple/5 rounded-2xl p-6 
-                           shadow-lg border border-medium-gray/10"
+                className="text-center bg-gradient-to-br from-electric-teal/5 to-deep-purple/5 rounded-2xl p-6 shadow-lg border border-medium-gray/10"
               >
-                <motion.div 
+                <motion.div
                   className="text-3xl lg:text-4xl font-bold text-electric-teal mb-2"
                   whileHover={{ scale: 1.2, color: "#FF6B35" }}
                 >
@@ -323,25 +288,25 @@ const ProjectsPage = () => {
             <p className="text-xl text-medium-gray mb-8 max-w-2xl mx-auto">
               Let's create something amazing together. Contact us to discuss your vision
             </p>
-            <motion.button
-              whileHover={{ 
-                scale: 1.05,
-                boxShadow: "0 15px 40px rgba(0, 212, 204, 0.4)",
-                rotateX: 10
-              }}
-              whileTap={{ scale: 0.95 }}
-              className="bg-electric-teal text-charcoal px-10 py-5 rounded-full text-lg font-semibold 
-                         hover:bg-opacity-90 transition-all duration-300 inline-flex items-center space-x-3
-                         relative overflow-hidden group"
-            >
-              <motion.div
-                className="absolute inset-0 bg-white/10"
-                animate={{ x: [-100, 100] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-              <span>Start Your Project</span>
-              <SafeIcon icon={FiIcons.FiArrowRight} className="w-6 h-6" />
-            </motion.button>
+            <Link to="/contact">
+              <motion.button
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 15px 40px rgba(0, 212, 204, 0.4)",
+                  rotateX: 10
+                }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-electric-teal text-charcoal px-10 py-5 rounded-full text-lg font-semibold hover:bg-opacity-90 transition-all duration-300 inline-flex items-center space-x-3 relative overflow-hidden group"
+              >
+                <motion.div
+                  className="absolute inset-0 bg-white/10"
+                  animate={{ x: [-100, 100] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <span>Start Your Project</span>
+                <SafeIcon icon={FiArrowRight} className="w-6 h-6" />
+              </motion.button>
+            </Link>
           </motion.div>
         </div>
       </section>
