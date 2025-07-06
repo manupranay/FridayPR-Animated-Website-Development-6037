@@ -253,12 +253,6 @@ const ContactPage = () => {
                     description: 'Send us an email anytime'
                   },
                   {
-                    icon: FiPhone,
-                    title: 'Call Us',
-                    info: '+1 (514) 555-0123',
-                    description: 'Mon-Fri from 9am to 6pm EST'
-                  },
-                  {
                     icon: FiMapPin,
                     title: 'Visit Us',
                     info: 'Montreal, Quebec',
