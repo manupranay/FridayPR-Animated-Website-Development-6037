@@ -1,113 +1,71 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
+import React from 'react';
+import {motion} from 'framer-motion';
+import {useInView} from 'react-intersection-observer';
 import * as FiIcons from 'react-icons/fi';
 import SafeIcon from '../common/SafeIcon';
 
-const { FiMail, FiPhone, FiMapPin, FiSend, FiCheck, FiAlertCircle } = FiIcons;
+const {FiMail,FiPhone,FiMapPin,FiCalendar,FiClock,FiUsers} = FiIcons;
 
 const ContactPage = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
-  const [formStatus, setFormStatus] = useState({ type: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true });
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setFormStatus({ type: '', message: '' });
-
-    try {
-      const response = await fetch('https://api.fridaypr.com/wp-json/fluentform/v1/forms/1/submit', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (response.ok) {
-        setFormStatus({
-          type: 'success',
-          message: 'Thank you for your message! We\'ll get back to you soon.'
-        });
-        setFormData({ name: '', email: '', message: '' });
-      } else {
-        throw new Error('Failed to submit form');
-      }
-    } catch (error) {
-      setFormStatus({
-        type: 'error',
-        message: 'Sorry, there was an error sending your message. Please try again.'
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const [ref, inView] = useInView({threshold: 0.1, triggerOnce: true});
 
   const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2
-      }
-    }
+    hidden: {opacity: 0},
+    visible: {opacity: 1, transition: {staggerChildren: 0.2}}
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
+    hidden: {opacity: 0, y: 50},
+    visible: {opacity: 1, y: 0, transition: {duration: 0.6, ease: "easeOut"}}
   };
+
+  // Load TidyCal script
+  React.useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://asset-tidycal.b-cdn.net/js/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      // Cleanup script when component unmounts
+      const existingScript = document.querySelector('script[src="https://asset-tidycal.b-cdn.net/js/embed.js"]');
+      if (existingScript) {
+        document.body.removeChild(existingScript);
+      }
+    };
+  }, []);
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{opacity: 0}}
+      animate={{opacity: 1}}
+      exit={{opacity: 0}}
       className="pt-24"
     >
       {/* Hero Section */}
       <section className="hero-gradient py-20">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-5xl lg:text-6xl font-display font-bold text-navy-blue mb-6"
+            initial={{opacity: 0, y: 30}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.8}}
+            className="text-5xl lg:text-6xl font-display font-bold text-charcoal mb-6"
           >
-            Get In <span className="text-light-gold">Touch</span>
+            Get In <span className="text-electric-teal">Touch</span>
           </motion.h1>
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-xl text-sage-green max-w-3xl mx-auto"
+            initial={{opacity: 0, y: 30}}
+            animate={{opacity: 1, y: 0}}
+            transition={{duration: 0.8, delay: 0.2}}
+            className="text-xl text-charcoal/70 max-w-3xl mx-auto"
           >
-            Ready to elevate your digital presence? Let's discuss how we can help 
-            your business achieve its goals
+            Ready to elevate your digital presence? Let's discuss how we can help your business achieve its goals
           </motion.p>
         </div>
       </section>
 
       {/* Main Content */}
-      <section ref={ref} className="py-20 bg-off-white">
+      <section ref={ref} className="py-20 bg-pure-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             variants={containerVariants}
@@ -115,131 +73,61 @@ const ContactPage = () => {
             animate={inView ? "visible" : "hidden"}
             className="grid grid-cols-1 lg:grid-cols-2 gap-16"
           >
-            {/* Contact Form */}
+            {/* Booking Section */}
             <motion.div variants={itemVariants}>
-              <h2 className="text-3xl font-display font-bold text-navy-blue mb-8">
-                Send us a message
+              <h2 className="text-3xl font-display font-bold text-charcoal mb-8">
+                Ready to Talk?
               </h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  className="relative"
-                >
-                  <label htmlFor="name" className="block text-sm font-semibold text-navy-blue mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-6 py-4 border-2 border-sage-green/20 rounded-2xl 
-                               focus:border-light-gold focus:outline-none transition-colors duration-300
-                               bg-white text-navy-blue placeholder-sage-green"
-                    placeholder="Enter your full name"
-                  />
-                </motion.div>
+              <div className="bg-gradient-to-br from-electric-teal/5 to-deep-purple/5 rounded-3xl p-8 mb-8">
+                <div className="flex items-center mb-6">
+                  <div className="w-12 h-12 bg-electric-teal/20 rounded-2xl flex items-center justify-center mr-4">
+                    <SafeIcon icon={FiCalendar} className="w-6 h-6 text-electric-teal" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-charcoal">60-Minute Discovery Meeting</h3>
+                    <p className="text-charcoal/70">Let's discuss your project goals and vision</p>
+                  </div>
+                </div>
+                
+                <p className="text-lg text-charcoal/80 leading-relaxed mb-6">
+                  Skip the inbox clutter — book a 60-minute discovery meeting directly on our calendar.
+                </p>
 
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  className="relative"
-                >
-                  <label htmlFor="email" className="block text-sm font-semibold text-navy-blue mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-6 py-4 border-2 border-sage-green/20 rounded-2xl 
-                               focus:border-light-gold focus:outline-none transition-colors duration-300
-                               bg-white text-navy-blue placeholder-sage-green"
-                    placeholder="Enter your email address"
-                  />
-                </motion.div>
+                <div className="flex items-center space-x-4 text-sm text-charcoal/70 mb-6">
+                  <div className="flex items-center space-x-2">
+                    <SafeIcon icon={FiClock} className="w-4 h-4 text-electric-teal" />
+                    <span>60 minutes</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <SafeIcon icon={FiUsers} className="w-4 h-4 text-electric-teal" />
+                    <span>Virtual meeting</span>
+                  </div>
+                </div>
 
-                <motion.div
-                  whileFocus={{ scale: 1.02 }}
-                  className="relative"
-                >
-                  <label htmlFor="message" className="block text-sm font-semibold text-navy-blue mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={6}
-                    className="w-full px-6 py-4 border-2 border-sage-green/20 rounded-2xl 
-                               focus:border-light-gold focus:outline-none transition-colors duration-300
-                               bg-white text-navy-blue placeholder-sage-green resize-none"
-                    placeholder="Tell us about your project..."
-                  />
-                </motion.div>
-
-                {/* Form Status */}
-                {formStatus.message && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex items-center space-x-2 p-4 rounded-2xl ${
-                      formStatus.type === 'success' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    <SafeIcon 
-                      icon={formStatus.type === 'success' ? FiCheck : FiAlertCircle} 
-                      className="w-5 h-5" 
-                    />
-                    <span>{formStatus.message}</span>
-                  </motion.div>
-                )}
-
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`w-full py-4 px-8 rounded-2xl font-semibold text-lg transition-all duration-300 
-                              flex items-center justify-center space-x-3 ${
-                    isSubmitting
-                      ? 'bg-sage-green/50 text-off-white cursor-not-allowed'
-                      : 'bg-light-gold text-navy-blue hover:bg-opacity-90 hover:shadow-lg'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-off-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Sending...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Send Message</span>
-                      <SafeIcon icon={FiSend} className="w-5 h-5" />
-                    </>
-                  )}
-                </motion.button>
-              </form>
+                <div className="bg-pure-white rounded-2xl p-6 shadow-lg">
+                  <h4 className="font-bold text-charcoal mb-4 flex items-center">
+                    <span className="text-2xl mr-2">👉</span>
+                    Book a Call Now
+                  </h4>
+                  
+                  {/* TidyCal Embed */}
+                  <div 
+                    className="tidycal-embed" 
+                    data-path="fridaypr/discovery"
+                    style={{minHeight: '600px'}}
+                  ></div>
+                </div>
+              </div>
             </motion.div>
 
             {/* Contact Info */}
             <motion.div variants={itemVariants} className="space-y-8">
               <div>
-                <h2 className="text-3xl font-display font-bold text-navy-blue mb-8">
+                <h2 className="text-3xl font-display font-bold text-charcoal mb-8">
                   Let's connect
                 </h2>
-                <p className="text-lg text-sage-green mb-8">
-                  We're here to help you succeed. Reach out to us through any of the 
-                  following channels, and we'll get back to you as soon as possible.
+                <p className="text-lg text-charcoal/70 mb-8">
+                  We're here to help you succeed. Reach out to us through any of the following channels, and we'll get back to you as soon as possible.
                 </p>
               </div>
 
@@ -253,6 +141,12 @@ const ContactPage = () => {
                     description: 'Send us an email anytime'
                   },
                   {
+                    icon: FiPhone,
+                    title: 'Call Us',
+                    info: '+1 (514) 555-0123',
+                    description: 'Mon-Fri from 9am to 6pm EST'
+                  },
+                  {
                     icon: FiMapPin,
                     title: 'Visit Us',
                     info: 'Montreal, Quebec',
@@ -261,16 +155,16 @@ const ContactPage = () => {
                 ].map((contact, index) => (
                   <motion.div
                     key={index}
-                    whileHover={{ x: 5 }}
-                    className="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover"
+                    whileHover={{x: 5}}
+                    className="flex items-start space-x-4 p-6 bg-light-gray rounded-2xl shadow-lg card-hover"
                   >
-                    <div className="w-12 h-12 bg-light-gold/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <SafeIcon icon={contact.icon} className="w-6 h-6 text-light-gold" />
+                    <div className="w-12 h-12 bg-electric-teal/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                      <SafeIcon icon={contact.icon} className="w-6 h-6 text-electric-teal" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-navy-blue mb-1">{contact.title}</h3>
-                      <p className="text-lg font-semibold text-light-gold mb-1">{contact.info}</p>
-                      <p className="text-sm text-sage-green">{contact.description}</p>
+                      <h3 className="font-bold text-charcoal mb-1">{contact.title}</h3>
+                      <p className="text-lg font-semibold text-electric-teal mb-1">{contact.info}</p>
+                      <p className="text-sm text-charcoal/70">{contact.description}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -278,11 +172,11 @@ const ContactPage = () => {
 
               {/* Business Hours */}
               <motion.div
-                whileHover={{ scale: 1.02 }}
-                className="bg-navy-blue text-off-white p-8 rounded-3xl"
+                whileHover={{scale: 1.02}}
+                className="bg-charcoal text-pure-white p-8 rounded-3xl"
               >
                 <h3 className="text-xl font-bold mb-4">Business Hours</h3>
-                <div className="space-y-2 text-sage-green">
+                <div className="space-y-2 text-medium-gray">
                   <div className="flex justify-between">
                     <span>Monday - Friday</span>
                     <span>9:00 AM - 6:00 PM</span>
@@ -296,7 +190,7 @@ const ContactPage = () => {
                     <span>Closed</span>
                   </div>
                 </div>
-                <p className="text-sm text-sage-green/80 mt-4">
+                <p className="text-sm text-medium-gray mt-4">
                   *Emergency support available 24/7 for existing clients
                 </p>
               </motion.div>
@@ -305,53 +199,117 @@ const ContactPage = () => {
         </div>
       </section>
 
+      {/* What to Expect Section */}
+      <section className="py-20 bg-light-gray">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{opacity: 0, y: 30}}
+            whileInView={{opacity: 1, y: 0}}
+            transition={{duration: 0.8}}
+            viewport={{once: true}}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl font-display font-bold text-charcoal mb-6">
+              What to Expect in Our Discovery Call
+            </h2>
+            <p className="text-xl text-charcoal/70 max-w-3xl mx-auto">
+              Here's what we'll cover during our 60-minute conversation
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                step: '01',
+                title: 'Your Vision',
+                description: 'We\'ll discuss your business goals, target audience, and project vision.',
+                icon: '🎯'
+              },
+              {
+                step: '02',
+                title: 'Current Challenges',
+                description: 'Identify pain points and opportunities for improvement in your digital presence.',
+                icon: '🔍'
+              },
+              {
+                step: '03',
+                title: 'Solution Strategy',
+                description: 'We\'ll outline potential solutions and strategies tailored to your needs.',
+                icon: '💡'
+              },
+              {
+                step: '04',
+                title: 'Next Steps',
+                description: 'Clear action items and timeline for moving forward with your project.',
+                icon: '🚀'
+              }
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{opacity: 0, y: 30}}
+                whileInView={{opacity: 1, y: 0}}
+                transition={{duration: 0.6, delay: index * 0.1}}
+                viewport={{once: true}}
+                whileHover={{y: -5, scale: 1.02}}
+                className="bg-pure-white rounded-3xl p-8 text-center shadow-lg border border-medium-gray/10"
+              >
+                <div className="text-4xl mb-4">{item.icon}</div>
+                <div className="text-2xl font-bold text-electric-teal mb-2">{item.step}</div>
+                <h3 className="text-xl font-bold text-charcoal mb-3">{item.title}</h3>
+                <p className="text-charcoal/70">{item.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
-      <section className="py-20 bg-sage-green/10">
+      <section className="py-20 bg-pure-white">
         <div className="max-w-4xl mx-auto px-6">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
+            initial={{opacity: 0, y: 30}}
+            whileInView={{opacity: 1, y: 0}}
+            transition={{duration: 0.8}}
+            viewport={{once: true}}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-display font-bold text-navy-blue mb-6">
+            <h2 className="text-4xl font-display font-bold text-charcoal mb-6">
               Frequently Asked Questions
             </h2>
-            <p className="text-xl text-sage-green">
-              Quick answers to common questions about our services
+            <p className="text-xl text-charcoal/70">
+              Quick answers to common questions about our discovery calls
             </p>
           </motion.div>
 
           <div className="space-y-6">
             {[
               {
-                q: "How long does a typical project take?",
-                a: "Project timelines vary based on scope and complexity. A standard website typically takes 2-4 weeks, while more complex projects may take 6-8 weeks."
+                q: "What if I'm not ready to start a project immediately?",
+                a: "No problem! Our discovery calls are designed to help you understand your options and plan for the future. There's no pressure to start immediately."
               },
               {
-                q: "Do you offer ongoing support after project completion?",
-                a: "Yes! We provide ongoing maintenance, updates, and support packages to ensure your website continues to perform optimally."
+                q: "Do I need to prepare anything for the call?",
+                a: "Just come with your ideas and questions! If you have existing materials (website, branding, etc.), feel free to share them, but it's not required."
               },
               {
-                q: "What's included in your SEO services?",
-                a: "Our SEO services include keyword research, on-page optimization, technical SEO, content strategy, and monthly performance reporting."
+                q: "Is there any cost for the discovery call?",
+                a: "The discovery call is completely free. It's our way of getting to know you and understanding how we can best help your business."
               },
               {
-                q: "Can you help with existing websites?",
-                a: "Absolutely! We can redesign, optimize, or enhance existing websites to improve performance and user experience."
+                q: "What happens after our discovery call?",
+                a: "We'll send you a detailed proposal with recommendations, timeline, and pricing. You can take time to review and decide what works best for you."
               }
             ].map((faq, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="bg-white rounded-2xl p-6 shadow-lg"
+                initial={{opacity: 0, y: 20}}
+                whileInView={{opacity: 1, y: 0}}
+                transition={{duration: 0.6, delay: index * 0.1}}
+                viewport={{once: true}}
+                className="bg-light-gray rounded-2xl p-6 shadow-lg"
               >
-                <h3 className="text-lg font-bold text-navy-blue mb-3">{faq.q}</h3>
-                <p className="text-sage-green">{faq.a}</p>
+                <h3 className="text-lg font-bold text-charcoal mb-3">{faq.q}</h3>
+                <p className="text-charcoal/70">{faq.a}</p>
               </motion.div>
             ))}
           </div>
