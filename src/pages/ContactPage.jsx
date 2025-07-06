@@ -71,7 +71,7 @@ const ContactPage = () => {
             variants={containerVariants}
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-16"
+            className="grid grid-cols-1 "
           >
             {/* Booking Section */}
             <motion.div variants={itemVariants}>
@@ -140,18 +140,6 @@ const ContactPage = () => {
                     info: 'hello@fridaypr.com',
                     description: 'Send us an email anytime'
                   },
-                  {
-                    icon: FiPhone,
-                    title: 'Call Us',
-                    info: '+1 (514) 555-0123',
-                    description: 'Mon-Fri from 9am to 6pm EST'
-                  },
-                  {
-                    icon: FiMapPin,
-                    title: 'Visit Us',
-                    info: 'Montreal, Quebec',
-                    description: 'Available for in-person meetings'
-                  }
                 ].map((contact, index) => (
                   <motion.div
                     key={index}
@@ -169,31 +157,6 @@ const ContactPage = () => {
                   </motion.div>
                 ))}
               </div>
-
-              {/* Business Hours */}
-              <motion.div
-                whileHover={{scale: 1.02}}
-                className="bg-charcoal text-pure-white p-8 rounded-3xl"
-              >
-                <h3 className="text-xl font-bold mb-4">Business Hours</h3>
-                <div className="space-y-2 text-medium-gray">
-                  <div className="flex justify-between">
-                    <span>Monday - Friday</span>
-                    <span>9:00 AM - 6:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Saturday</span>
-                    <span>10:00 AM - 4:00 PM</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Sunday</span>
-                    <span>Closed</span>
-                  </div>
-                </div>
-                <p className="text-sm text-medium-gray mt-4">
-                  *Emergency support available 24/7 for existing clients
-                </p>
-              </motion.div>
             </motion.div>
           </motion.div>
         </div>

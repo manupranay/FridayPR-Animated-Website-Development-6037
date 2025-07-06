@@ -81,10 +81,6 @@ const Footer = () => {
                 <SafeIcon icon={FiMail} className="w-4 h-4 text-bright-orange" />
                 <span className="text-medium-gray text-sm">hello@fridaypr.com</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <SafeIcon icon={FiPhone} className="w-4 h-4 text-bright-orange" />
-                <span className="text-medium-gray text-sm">+1 (514) 555-0123</span>
-              </div>
             </div>
           </motion.div>
         </div>

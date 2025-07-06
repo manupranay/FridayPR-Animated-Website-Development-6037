@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import * as FiIcons from 'react-icons/fi';
@@ -267,14 +268,11 @@ const AboutPage = () => {
               className="bg-gradient-to-r from-electric-teal/5 to-deep-purple/5 rounded-3xl overflow-hidden shadow-xl"
             >
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                <div className="h-64 lg:h-full bg-gradient-to-br from-electric-teal via-deep-purple to-bright-orange relative">
-                  <motion.div
-                    animate={{ 
-                      opacity: [0.3, 0.7, 0.3],
-                      scale: [1, 1.1, 1]
-                    }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute inset-0 bg-white/20 backdrop-blur-sm"
+                <div className="flex items-center justify-center h-80 lg:h-96 bg-white">
+                  <img
+                    src="/src/photos/Manupranay.jpg"
+                    alt="Manu Pranay Adupa - Founder of FridayPR"
+                    className="w-40 h-40 lg:w-96 lg:h-96 object-cover rounded-full border-4 border-gray-200 shadow-md"
                   />
                 </div>
                 <div className="p-8 lg:p-12 flex flex-col justify-center">
@@ -282,20 +280,18 @@ const AboutPage = () => {
                     className="text-3xl font-bold text-charcoal mb-2"
                     whileHover={{ color: "#00D4CC" }}
                   >
-                    Sarah Chen
+                    Manu Pranay Adupa
                   </motion.h3>
-                  <p className="text-electric-teal font-semibold mb-4 text-lg">Founder & Creative Director</p>
+                  <p className="text-electric-teal font-semibold mb-4 text-lg">Just the guy who turns ideas into websites that actually work.</p>
                   <p className="text-charcoal/70 leading-relaxed mb-6">
-                    With over 5 years of experience in digital marketing and web design, Sarah founded 
-                    FridayPR with a vision to help small businesses compete in the digital landscape. 
-                    Her expertise spans across brand strategy, web development, and digital PR.
+                    I’m the creative force behind FridayPR — a studio I built for founders, freelancers, and small businesses ready to stop playing small and start showing up like pros. With 5+ years of hands-on experience in web design and digital strategy, I blend smart branding, modern UI/UX, and a no-BS approach to launch websites that convert, impress, and scale.
                   </p>
                   <div className="space-y-2">
                     <p className="text-sm text-charcoal/60">
-                      <span className="font-semibold">Specialties:</span> Brand Strategy, UX/UI Design, Digital Marketing
+                      <span className="font-semibold">What I’m great at:</span> Branding, UI/UX, Messaging, Digital Campaigns
                     </p>
                     <p className="text-sm text-charcoal/60">
-                      <span className="font-semibold">Education:</span> Digital Marketing Certification, Google Analytics
+                      <span className="font-semibold">Tools of choice:</span> Figma, Framer, WordPress, Webflow, HTML, CSS, React, Tailwind CSS, 
                     </p>
                   </div>
                 </div>
@@ -320,6 +316,7 @@ const AboutPage = () => {
             <p className="text-xl text-medium-gray mb-8 max-w-2xl mx-auto">
               Let's discuss how we can help your business achieve its digital goals
             </p>
+            <Link to="/contact">
             <motion.button
               whileHover={{ 
                 scale: 1.05,
@@ -333,6 +330,7 @@ const AboutPage = () => {
               <span>Start a Conversation</span>
               <SafeIcon icon={FiIcons.FiArrowRight} className="w-6 h-6" />
             </motion.button>
+            </Link>
           </motion.div>
         </div>
       </section>

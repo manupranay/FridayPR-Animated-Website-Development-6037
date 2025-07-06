@@ -53,8 +53,7 @@ const Header = () => {
               transition: {
                 duration: 0.6,
                 delay: index * 0.1,
-                repeat: Infinity,
-                repeatType: 'reverse'
+                
               }
             } : { y: 0 }}
             className="inline-block"
