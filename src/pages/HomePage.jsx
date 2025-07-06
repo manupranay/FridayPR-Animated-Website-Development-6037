@@ -9,6 +9,8 @@ import FeaturedImage from '../components/FeaturedImage';
 import usePortfolioWithImages from '../hooks/usePortfolioWithImages';
 import useApiWithImages from '../hooks/useApiWithImages';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { FaWordpress, FaReact, FaHtml5, FaCss3Alt } from 'react-icons/fa';
+import { SiVite, SiFigma, SiWebflow, SiFramer, SiWix } from 'react-icons/si';
 
 const {FiArrowRight,FiZap,FiTrendingUp,FiTarget,FiUsers,FiGlobe,FiPenTool,FiMegaphone,FiEye} = FiIcons;
 
@@ -34,16 +36,16 @@ const HomePage = () => {
   };
 
   const tools = [
-    {name: 'WordPress', icon: '🔧'},
-    {name: 'React', icon: '⚛️'},
-    {name: 'Vite', icon: '⚡'},
-    {name: 'Figma', icon: '🎨'},
-    {name: 'HTML5', icon: '📄'},
-    {name: 'CSS3', icon: '🎨'},
-    {name: 'Webflow', icon: '🌊'},
-    {name: 'Framer', icon: '🖼️'},
-    {name: 'Wix', icon: '🏗️'},
-  ];
+  { name: 'WordPress', icon: <FaWordpress /> },
+  { name: 'React', icon: <FaReact /> },
+  { name: 'Vite', icon: <SiVite /> },
+  { name: 'Figma', icon: <SiFigma /> },
+  { name: 'HTML5', icon: <FaHtml5 /> },
+  { name: 'CSS3', icon: <FaCss3Alt /> },
+  { name: 'Webflow', icon: <SiWebflow /> },
+  { name: 'Framer', icon: <SiFramer /> },
+  { name: 'Wix', icon: <SiWix /> },
+];
 
   const mainServices = [
     {
